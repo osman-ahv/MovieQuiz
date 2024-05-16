@@ -74,6 +74,9 @@ final class MovieQuizViewController: UIViewController {
         show(quiz: firstStepViewModel)
         super.viewDidLoad()
     }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
