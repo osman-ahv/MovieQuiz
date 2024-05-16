@@ -107,12 +107,14 @@
                     <connections>
                         <outlet property="counterLabel" destination="nTW-Lg-sb7" id="dII-q7-hQT"/>
                         <outlet property="imageView" destination="0Q6-l5-GdG" id="xXD-ad-7Oc"/>
+                        <outlet property="noButton" destination="YGf-J2-zaP" id="uEd-Q1-5bJ"/>
                         <outlet property="textLabel" destination="w3U-Mz-MCC" id="inc-2m-N2n"/>
+                        <outlet property="yesButton" destination="gGJ-lI-wfT" id="D2I-RH-Mvu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1214" y="17"/>
+            <point key="canvasLocation" x="-1775" y="-5"/>
         </scene>
     </scenes>
     <resources>
