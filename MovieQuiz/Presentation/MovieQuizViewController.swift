@@ -11,23 +11,29 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var correctAnswers = 0
     
     private var currentQuestionIndex = 0
+    
     private let questionAmount: Int = 10
+    
     private var questionFactory: QuestionFactoryProtocol?
+    
     private var currentQuestion: QuizQuestion?
+    
+    private var alertDelegate: AlertPresenter?
     
 // MARK: -Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        imageView.layer.cornerRadius = 20
-        
+      imageView.layer.cornerRadius = 20
+// Mark: -QuestionFactory injection
         let questionFactory = QuestionFactory()
         questionFactory.delegate = self
         self.questionFactory = questionFactory
-        
         questionFactory.requestNextQuestion()
-        
+// Mark: -AlertPresenter injection
+        let alertDelegate = AlertPresenter()
+        alertDelegate.MovieQuiz = self
+        self.alertDelegate = alertDelegate
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -96,12 +102,25 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionAmount - 1 {
-            let text = correctAnswers == questionAmount ? "Поздравляем, вы ответили на 10 из 10!" : "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз! "
-            let resultViewModel = QuizResultViewModel(
+            let text = correctAnswers == questionAmount ? "Поздравляем, вы ответили на 10 из 10!" : "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
+            let alertModel = AlertModel(
                 title: "Этот раунд окончен!",
                 text: text,
-                buttonText: "Сыграть ещё раз")
-            show(quiz: resultViewModel)
+                buttonText: "Сыграть ещё раз") { [weak self] in
+                    guard let self = self else {return}
+                    
+                    self.yesButton.isEnabled = true
+                    self.noButton.isEnabled = true
+                    
+                    self.currentQuestionIndex = 0
+                    
+                    self.correctAnswers = 0
+                    
+                    self.questionFactory?.requestNextQuestion()
+                }
+            
+            alertDelegate?.showAlert(model: alertModel)
+            
         } else {
             yesButton.isEnabled = true
             noButton.isEnabled = true
@@ -110,27 +129,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self.questionFactory?.requestNextQuestion()
         }
     }
-    private func show(quiz result: QuizResultViewModel) {
-        let alert = UIAlertController(
-            title: result.title,
-            message: result.text,
-            preferredStyle: .alert)
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
-            guard let self = self else {return}
-            
-            self.yesButton.isEnabled = true
-            self.noButton.isEnabled = true
-            
-            self.currentQuestionIndex = 0
-            
-            self.correctAnswers = 0
-            
-            self.questionFactory?.requestNextQuestion()
-        }
-            alert.addAction(action)
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
+}
 /*
  Mock-данные
  
